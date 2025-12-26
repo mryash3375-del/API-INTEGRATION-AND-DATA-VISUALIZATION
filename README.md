@@ -13,7 +13,7 @@ A small, single-page Flask app that fetches weather and 5-day forecasts from Ope
 - Simple, responsive single-page UI served by Flask (`index.html`).
 - Minimal dependencies and easy local setup.
 
-![image alt]()
+![image alt](https://github.com/mryash3375-del/API-INTEGRATION-AND-DATA-VISUALIZATION/blob/main/Screenshot%202025-12-26%20120547.png?raw=true)
 
 ## Tech stack
 
@@ -120,6 +120,7 @@ If you'd like, I can also:
 - Add a sample screenshot to the README
 
 Tell me which of the above you'd like next.
+
 
 
 
