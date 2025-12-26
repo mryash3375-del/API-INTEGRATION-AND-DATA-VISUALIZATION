@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row g-4 justify-content-center">
+  <div class="col-12 col-lg-10">
+    <!-- Search & location row -->
+    <div class="card card-glass mb-4 p-3 p-md-4">
+      <div class="row g-3 align-items-center">
+        <div class="col-12 col-md-8">
+          <label for="cityInput" class="form-label text-soft">Search city</label>
+          <div class="input-group input-group-lg">
+            <span class="input-group-text bg-transparent border-0 ps-0">
+              <i class="wi wi-day-cloudy text-accent"></i>
+            </span>
+            <input
+              type="text"
+              class="form-control form-control-lg input-soft"
+              id="cityInput"
+              placeholder="e.g. London, New York, Tokyo"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+        <div class="col-12 col-md-4 d-flex gap-2 justify-content-md-end mt-2 mt-md-4">
+          <button id="searchBtn" class="btn btn-accent btn-lg flex-grow-1 flex-md-grow-0">
+            <span class="me-2 wi wi-search"></span>
+            Search
+          </button>
+          <button id="geoBtn" class="btn btn-outline-light btn-lg flex-grow-1 flex-md-grow-0">
+            <span class="me-2 wi wi-small-craft-advisory"></span>
+            Use my location
+          </button>
+        </div>
+      </div>
+      <div id="errorAlert" class="alert alert-danger mt-3 mb-0 d-none" role="alert"></div>
+    </div>
+  </div>
+
+  <!-- Current weather -->
+  <div class="col-12 col-lg-6">
+    <div class="card card-glass card-main h-100">
+      <div class="card-body d-flex flex-column justify-content-between">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <div>
+            <h1 id="currentCity" class="card-title mb-1">Loading...</h1>
+            <p id="currentMeta" class="card-subtitle text-soft small">&nbsp;</p>
+          </div>
+          <div class="icon-wrapper">
+            <i id="currentIcon" class="wi wi-day-sunny"></i>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-end mb-3 gap-3">
+          <div>
+            <span id="currentTemp" class="display-1 fw-bold">--</span>
+            <span class="temp-unit">°C</span>
+          </div>
+          <div class="mb-2 text-soft">
+            <div id="currentDescription" class="fw-semibold">&nbsp;</div>
+            <div id="feelsLike" class="small">Feels like -- °C</div>
+          </div>
+        </div>
+
+        <div class="row text-soft gy-2 mb-3">
+          <div class="col-6">
+            <div class="d-flex align-items-center gap-2">
+              <i class="wi wi-humidity text-accent"></i>
+              <div>
+                <div class="small text-uppercase">Humidity</div>
+                <div id="humidity" class="fw-semibold">-- %</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="d-flex align-items-center gap-2">
+              <i class="wi wi-strong-wind text-accent"></i>
+              <div>
+                <div class="small text-uppercase">Wind</div>
+                <div id="wind" class="fw-semibold">-- km/h</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="d-flex align-items-center gap-2">
+              <i class="wi wi-barometer text-accent"></i>
+              <div>
+                <div class="small text-uppercase">Pressure</div>
+                <div id="pressure" class="fw-semibold">-- hPa</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="d-flex align-items-center gap-2">
+              <i class="wi wi-sunrise text-accent"></i>
+              <div>
+                <div class="small text-uppercase">Sunrise / Sunset</div>
+                <div id="sunTimes" class="fw-semibold">-- / --</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="small text-soft d-flex justify-content-between">
+          <span id="updatedAt">&nbsp;</span>
+          <span>Data by OpenWeatherMap</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Forecast & charts -->
+  <div class="col-12 col-lg-6 d-flex flex-column gap-4">
+    <div class="card card-glass flex-grow-1">
+      <div class="card-body">
+        <h5 class="card-title mb-3">5-day outlook</h5>
+        <div id="forecastList" class="forecast-list d-flex flex-nowrap overflow-auto gap-3 pb-2">
+          <!-- Forecast day cards injected here -->
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-glass">
+      <div class="card-body">
+        <h5 class="card-title mb-3">Trends</h5>
+        <div class="chart-wrapper">
+          <canvas id="trendChart" height="220"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
