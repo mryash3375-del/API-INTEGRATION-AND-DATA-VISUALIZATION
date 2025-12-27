@@ -62,7 +62,7 @@ function attachEventListeners() {
       showError("Type a city name to search.");
       return;
     }
-    fetchWeather({ city });
+    fetchWeather({ city, triggerElement: elements.searchBtn });
   });
 
   elements.cityInput.addEventListener("keydown", (e) => {
@@ -77,13 +77,17 @@ function attachEventListeners() {
       showError("Geolocation is not supported in this browser.");
       return;
     }
-    showLoading(true);
+    setButtonLoading(elements.geoBtn, true);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        fetchWeather({ lat: pos.coords.latitude, lon: pos.coords.longitude });
+        fetchWeather({
+          lat: pos.coords.latitude,
+          lon: pos.coords.longitude,
+          triggerElement: elements.geoBtn,
+        });
       },
       (err) => {
-        showLoading(false);
+        setButtonLoading(elements.geoBtn, false);
         if (err.code === err.PERMISSION_DENIED) {
           showError("Location permission denied. You can still search by city.");
         } else {
@@ -116,6 +120,29 @@ function showLoading(isLoading) {
   elements.loadingOverlay.classList.toggle("d-none", !isLoading);
 }
 
+function setButtonLoading(btn, isLoading) {
+  if (!btn) return;
+  btn.disabled = isLoading;
+  const icon = btn.querySelector(".wi");
+  if (isLoading) {
+    // Save original icon class if needed
+    if (icon) {
+      if (!btn.dataset.originalIcon) {
+        btn.dataset.originalIcon = icon.className;
+      }
+      icon.className = "spinner-border spinner-border-sm me-2";
+      icon.setAttribute("role", "status");
+      icon.removeAttribute("aria-hidden");
+    }
+  } else {
+    if (icon && btn.dataset.originalIcon) {
+      icon.className = btn.dataset.originalIcon;
+      icon.removeAttribute("role");
+      icon.setAttribute("aria-hidden", "true");
+    }
+  }
+}
+
 function showError(message) {
   if (!elements.errorAlert) return;
   elements.errorAlert.textContent = message;
@@ -125,9 +152,13 @@ function showError(message) {
   }, 4000);
 }
 
-async function fetchWeather({ city, lat, lon }) {
+async function fetchWeather({ city, lat, lon, triggerElement = null }) {
   try {
-    showLoading(true);
+    if (triggerElement) {
+      setButtonLoading(triggerElement, true);
+    } else {
+      showLoading(true);
+    }
     elements.errorAlert?.classList.add("d-none");
 
     const params = new URLSearchParams();
@@ -151,7 +182,11 @@ async function fetchWeather({ city, lat, lon }) {
     console.error(err);
     showError("Network error. Please check your connection and try again.");
   } finally {
-    showLoading(false);
+    if (triggerElement) {
+      setButtonLoading(triggerElement, false);
+    } else {
+      showLoading(false);
+    }
   }
 }
 
@@ -245,7 +280,7 @@ function renderForecast() {
     card.className = "forecast-card d-flex flex-column align-items-center text-center";
     card.innerHTML = `
       <div class="small text-soft mb-1">${day.label}</div>
-      <i class="wi ${iconClass} forecast-icon mb-1"></i>
+      <i class="wi ${iconClass} forecast-icon mb-1" aria-hidden="true"></i>
       <div class="fw-semibold small mb-1">${day.description}</div>
       <div class="fw-bold">${tempMax}${unitSymbol}</div>
       <div class="text-soft small">Low ${tempMin}${unitSymbol}</div>
