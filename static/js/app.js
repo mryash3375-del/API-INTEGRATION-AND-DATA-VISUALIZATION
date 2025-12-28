@@ -49,9 +49,12 @@ function init() {
       () => {
         showLoading(false);
         // Leave UI idle, user can search manually
+        elements.cityInput.focus();
       },
       { timeout: 8000 }
     );
+  } else {
+    elements.cityInput.focus();
   }
 }
 
@@ -69,6 +72,13 @@ function attachEventListeners() {
     if (e.key === "Enter") {
       e.preventDefault();
       elements.searchBtn.click();
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "/" && document.activeElement !== elements.cityInput) {
+      e.preventDefault();
+      elements.cityInput.focus();
     }
   });
 
@@ -245,7 +255,7 @@ function renderForecast() {
     card.className = "forecast-card d-flex flex-column align-items-center text-center";
     card.innerHTML = `
       <div class="small text-soft mb-1">${day.label}</div>
-      <i class="wi ${iconClass} forecast-icon mb-1"></i>
+      <i class="wi ${iconClass} forecast-icon mb-1" aria-hidden="true"></i>
       <div class="fw-semibold small mb-1">${day.description}</div>
       <div class="fw-bold">${tempMax}${unitSymbol}</div>
       <div class="text-soft small">Low ${tempMin}${unitSymbol}</div>
