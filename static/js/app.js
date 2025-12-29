@@ -56,13 +56,22 @@ function init() {
 }
 
 function attachEventListeners() {
-  elements.searchBtn.addEventListener("click", () => {
+  elements.searchBtn.addEventListener("click", async () => {
     const city = (elements.cityInput.value || "").trim();
     if (!city) {
       showError("Type a city name to search.");
       return;
     }
-    fetchWeather({ city });
+
+    const originalContent = elements.searchBtn.innerHTML;
+    elements.searchBtn.disabled = true;
+    elements.searchBtn.innerHTML =
+      '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Searching...';
+
+    await fetchWeather({ city }, { showOverlay: false });
+
+    elements.searchBtn.disabled = false;
+    elements.searchBtn.innerHTML = originalContent;
   });
 
   elements.cityInput.addEventListener("keydown", (e) => {
@@ -125,9 +134,9 @@ function showError(message) {
   }, 4000);
 }
 
-async function fetchWeather({ city, lat, lon }) {
+async function fetchWeather({ city, lat, lon }, { showOverlay = true } = {}) {
   try {
-    showLoading(true);
+    if (showOverlay) showLoading(true);
     elements.errorAlert?.classList.add("d-none");
 
     const params = new URLSearchParams();
@@ -151,7 +160,7 @@ async function fetchWeather({ city, lat, lon }) {
     console.error(err);
     showError("Network error. Please check your connection and try again.");
   } finally {
-    showLoading(false);
+    if (showOverlay) showLoading(false);
   }
 }
 
